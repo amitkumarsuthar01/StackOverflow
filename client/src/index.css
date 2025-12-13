@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.quill .ql-toolbar.ql-snow {
+  border: 1px solid #d1d5db;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+}
+
+.quill .ql-container.ql-snow {
+  border: 1px solid #d1d5db;
+  border-radius: 0 0 6px 6px;
+  min-height: 200px;
+}
+
