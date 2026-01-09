@@ -68,7 +68,6 @@ export default function App() {
           {/* View Question inside layout */}
           <Route path="view-question/:id" element={<ViewQuestion />} />
 
-          {/* Ask Question inside layout */}
         </Route>
 
         {/* Pages WITHOUT layout */}

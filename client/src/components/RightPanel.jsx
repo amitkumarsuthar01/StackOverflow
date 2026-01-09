@@ -1,17 +1,19 @@
 import CloseIcon from "@mui/icons-material/Close";
 import CreateIcon from "@mui/icons-material/Create";
 import ModeCommentOutlinedIcon from "@mui/icons-material/ModeCommentOutlined";
-import { collectives } from "./Collectivedata"; // <-- make sure path is correct
+import { collectives } from "./Collectivedata";
 
 export default function RightPanel({ open }) {
   return (
     <aside
-      className={`
-        fixed lg:static right-0 h-full w-72 bg-white overflow-y-auto
-        transition-transform duration-300 hidden md:block text-xs
-        ${open ? "translate-x-0" : "translate-x-full lg:translate-x-0"}
-      `}
-    >
+  className={`
+    fixed right-0 top-0 z-40 h-full w-72 bg-white overflow-y-auto text-xs
+    transition-transform duration-300
+    md:static md:translate-x-0 md:block
+    ${open ? "translate-x-0" : "translate-x-full"}
+  `}
+>
+
       <div>
         {/* ORIGINAL SECTION */}
         <div className="bg-yellow-50 border-yellow-400 border-[1px] rounded-lg">

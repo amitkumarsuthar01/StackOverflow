@@ -5,12 +5,15 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../features/auth/authSlice";
+// import { set } from "mongoose";
+import { setSearchQuery } from "../features/questions/questionSlice";
 
 const Header = ({ leftOpen, setLeftOpen }) => {
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const searchRef = useRef(null);
   const dropdownRef = useRef(null);
+  const [search, setSearch] = useState("");
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -61,7 +64,7 @@ const Header = ({ leftOpen, setLeftOpen }) => {
     : user?.email?.charAt(0).toUpperCase();
 
   return (
-    <div className="max-w-full mx-auto px-4 xl:px-32 py-3 border-b border-gray-300 flex items-center justify-between gap-4 relative">
+    <div className="w-full mx-auto px-4 xl:px-32 py-3 border-b border-gray-300 flex items-center justify-between gap-4 relative">
       {/* LEFT SECTION */}
       <div className="flex items-center gap-4">
         {showMenuIcon && (
@@ -104,13 +107,19 @@ const Header = ({ leftOpen, setLeftOpen }) => {
       </div>
 
       {/* RIGHT SECTION */}
-      <div className="max-w-full flex items-center gap-3 flex-1 justify-end">
+      <div className="w-full flex items-center gap-3 flex-1 justify-end">
         {/* Desktop Search */}
         <div className="hidden md:flex items-center gap-2 border border-gray-300 rounded-md px-2 py-[6px] flex-grow max-w-[600px]">
           <SearchIcon sx={{ color: "gray" }} />
           <input
             type="text"
             placeholder="Search…"
+            value={search}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSearch(value);
+              dispatch(setSearchQuery(value));
+            }}
             className="outline-none w-full placeholder:text-sm placeholder-gray-500"
           />
         </div>
@@ -179,7 +188,12 @@ const Header = ({ leftOpen, setLeftOpen }) => {
           <input
             type="text"
             placeholder="Search…"
-            autoFocus
+            value={search}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSearch(value);
+              dispatch(setSearchQuery(value));
+            }}
             className="outline-none w-full placeholder:text-sm placeholder-gray-500"
           />
         </div>

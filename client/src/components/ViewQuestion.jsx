@@ -244,10 +244,10 @@ useEffect(() => {
     <div className="max-w-4xl mx-auto p-4">
       {/* TITLE */}
       <div className="flex justify-between mb-6 border-b pb-4">
-        <h1 className="text-3xl font-semibold">{question.title}</h1>
+        <h2 className="text-2xl font-semibold">{question.title}</h2>
         <Link
           to="/ask-question"
-          className="bg-blue-600 text-white px-3 py-2 rounded"
+          className="bg-blue-600 w-32 h-12 text-nowrap text-white px-3 py-2 rounded"
         >
           Ask Question
         </Link>

@@ -64,6 +64,47 @@ router.get("/", async (req, res) => {
 });
 
 /* ===============================
+   SEARCH QUESTIONS (PUBLIC)
+================================ */
+router.get("/search", async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q || q.trim().length < 2) {
+      return res.status(200).json({
+        success: true,
+        questions: [],
+      });
+    }
+
+    const questions = await QuestionDB.find(
+      {
+        $text: { $search: q },
+      },
+      {
+        score: { $meta: "textScore" },
+      }
+    )
+      .sort({ score: { $meta: "textScore" } })
+      .limit(10)
+      .select("title tags views answers createdAt")
+      .lean();
+
+    res.status(200).json({
+      success: true,
+      questions,
+    });
+  } catch (err) {
+    console.error("Search questions error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to search questions",
+    });
+  }
+});
+
+
+/* ===============================
    GET SINGLE QUESTION (PROTECTED)
 ================================ */
 router.get("/:id", auth, async (req, res) => {

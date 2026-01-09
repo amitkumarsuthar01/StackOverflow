@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import LaunchIcon from "@mui/icons-material/Launch";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { auth } from "../firebase"; // ✅ Firebase auth
+import { auth } from "../firebase";
 
 const AskQuestion = () => {
   const user = useSelector((state) => state.auth.user);

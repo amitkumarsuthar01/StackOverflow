@@ -1,3 +1,4 @@
+
 import React from "react";
 
 const footerLinks = [
@@ -44,7 +45,7 @@ const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="max-w-screen-2xl mx-auto bg-black text-gray-300 text-[13px] px-4 xl:px-32 py-6">
+    <footer className="w-full mx-auto bg-black text-gray-300 text-[13px] px-4 xl:px-32 py-6">
       <div className="mb-5">
         <img src="/short-ogo-stackoverflow.png" alt="logo" className="h-10" />
       </div>

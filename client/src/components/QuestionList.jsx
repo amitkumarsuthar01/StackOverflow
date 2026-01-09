@@ -3,6 +3,8 @@ import QuestionItem from "./QuestionItem";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { setQuestions } from "../features/questions/questionSlice";
 
 /* ================= CALCULATE TOTAL VOTES ================= */
 const getVoteCount = (votes) => {
@@ -13,7 +15,12 @@ const getVoteCount = (votes) => {
 export default function QuestionList() {
   const filters = ["Newest", "Active", "Unanswered", "More"];
 
-  const [questions, setQuestions] = useState([]);
+  const questionsState = useSelector((state) => state.questions || {});
+  const questions = questionsState.list || [];
+  const searchQuery = questionsState.searchQuery || "";
+
+  const dispatch = useDispatch();
+
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("Newest");
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,28 +28,58 @@ export default function QuestionList() {
   const questionsPerPage = 10;
 
   /* ================= FETCH QUESTIONS ================= */
+  // useEffect(() => {
+  //   const fetchQuestions = async () => {
+  //     try {
+  //       const res = await fetch("/api/question");
+
+  //       if (!res.ok) {
+  //         const text = await res.text();
+  //         console.error("Server error:", text);
+  //         return;
+  //       }
+
+  //       const data = await res.json();
+  //       setQuestions(data.questions || []);
+  //     } catch (error) {
+  //       console.error("Failed to fetch questions", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchQuestions();
+  // }, []);
+
+  //FETCH QUESTIONS ON SEARCH
   useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        const res = await fetch("/api/question");
+  const loadQuestions = async () => {
+    try {
+      setLoading(true);
 
-        if (!res.ok) {
-          const text = await res.text();
-          console.error("Server error:", text);
-          return;
-        }
+      const url = searchQuery
+        ? `/api/question/search?q=${searchQuery}`
+        : `/api/question`;
 
-        const data = await res.json();
-        setQuestions(data.questions || []);
-      } catch (error) {
-        console.error("Failed to fetch questions", error);
-      } finally {
-        setLoading(false);
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("Server error:", data);
+        return;
       }
-    };
 
-    fetchQuestions();
-  }, []);
+      dispatch(setQuestions(data.questions || []));
+    } catch (error) {
+      console.error("Failed to load questions", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadQuestions();
+}, [searchQuery, dispatch]);
+
 
   /* ================= SORTING ================= */
   const sortedQuestions = [...questions].sort((a, b) => {
