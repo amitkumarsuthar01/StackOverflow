@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { auth, db } from "../../firebase";
+
 import {
   doc,
   setDoc,
@@ -16,6 +17,39 @@ import {
 } from "firebase/auth";
 
 import { googleProvider, githubProvider } from "../../firebase";
+
+/* ============================================================
+   🔥 SYNC USER TO MONGODB (MUST BE AT TOP)
+============================================================ */
+export const syncUserToMongo = async () => {
+
+  const user = auth.currentUser;
+  if (!user) {
+    console.log("❌ No auth.currentUser");
+    return null;
+  }
+
+  const token = await user.getIdToken(true);
+
+  const res = await fetch("/api/auth/me", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error("Mongo sync failed");
+  }
+
+  return res.json();
+};
+
 
 /* ============================================================
    🔥 Helper: Fetch user profile from Firestore
@@ -41,13 +75,12 @@ export const registerUser = createAsyncThunk(
 
       const user = userCredential.user;
 
-      // Update Firebase Auth display name
       if (displayName) {
         await updateProfile(user, { displayName });
       }
 
-      // Save Firestore Profile
-      const userProfile = {
+      // 🔥 Firestore
+      await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
         email,
         displayName,
@@ -58,11 +91,10 @@ export const registerUser = createAsyncThunk(
         reputation: 1,
         authProvider: "email",
         createdAt: serverTimestamp(),
-      };
+      });
 
-      await setDoc(doc(db, "users", user.uid), userProfile);
 
-      return userProfile;
+      return await fetchUserProfile(user.uid);
     } catch (err) {
       return rejectWithValue(err.message);
     }
@@ -76,12 +108,14 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const loginResult = await signInWithEmailAndPassword(auth, email, password);
+      const loginResult = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-      // Fetch Firestore profile
-      const profile = await fetchUserProfile(loginResult.user.uid);
 
-      return profile;
+      return await fetchUserProfile(loginResult.user.uid);
     } catch (err) {
       return rejectWithValue(err.message);
     }
@@ -98,11 +132,11 @@ export const loginWithGoogle = createAsyncThunk(
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
 
+      // 🔥 Firestore
       const userRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(userRef);
+      const snap = await getDoc(userRef);
 
-      // If new user → Create profile
-      if (!docSnap.exists()) {
+      if (!snap.exists()) {
         await setDoc(userRef, {
           uid: user.uid,
           email: user.email,
@@ -116,6 +150,7 @@ export const loginWithGoogle = createAsyncThunk(
           createdAt: serverTimestamp(),
         });
       }
+
 
       return await fetchUserProfile(user.uid);
     } catch (err) {
@@ -134,10 +169,11 @@ export const loginWithGithub = createAsyncThunk(
       const result = await signInWithPopup(auth, githubProvider);
       const user = result.user;
 
+      // 🔥 Firestore
       const userRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(userRef);
+      const snap = await getDoc(userRef);
 
-      if (!docSnap.exists()) {
+      if (!snap.exists()) {
         await setDoc(userRef, {
           uid: user.uid,
           email: user.email,
@@ -151,6 +187,7 @@ export const loginWithGithub = createAsyncThunk(
           createdAt: serverTimestamp(),
         });
       }
+
 
       return await fetchUserProfile(user.uid);
     } catch (err) {
@@ -180,7 +217,7 @@ export const logoutUser = createAsyncThunk(
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: null, //
+    user: null,
     status: "idle",
     error: null,
     authChecked: false,
@@ -195,7 +232,6 @@ const authSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      // REGISTER
       .addCase(registerUser.pending, (s) => {
         s.status = "loading";
       })
@@ -208,7 +244,6 @@ const authSlice = createSlice({
         s.error = action.payload;
       })
 
-      // EMAIL LOGIN
       .addCase(loginUser.pending, (s) => {
         s.status = "loading";
       })
@@ -221,7 +256,6 @@ const authSlice = createSlice({
         s.error = action.payload;
       })
 
-      // GOOGLE LOGIN
       .addCase(loginWithGoogle.fulfilled, (s, action) => {
         s.status = "succeeded";
         s.user = action.payload;
@@ -231,7 +265,6 @@ const authSlice = createSlice({
         s.error = action.payload;
       })
 
-      // GITHUB LOGIN
       .addCase(loginWithGithub.fulfilled, (s, action) => {
         s.status = "succeeded";
         s.user = action.payload;
@@ -241,7 +274,6 @@ const authSlice = createSlice({
         s.error = action.payload;
       })
 
-      // LOGOUT
       .addCase(logoutUser.fulfilled, (s) => {
         s.user = null;
       });

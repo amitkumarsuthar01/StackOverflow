@@ -4,5 +4,5 @@ export const getAuthToken = async () => {
   const user = auth.currentUser;
   if (!user) return null;
 
-  return await user.getIdToken(); // 🔥 FIREBASE TOKEN
+  return await user.getIdToken(true);
 };

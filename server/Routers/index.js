@@ -4,6 +4,7 @@ import questionRouter from "./Questions.js";
 import answerRouter from "./Answers.js";
 import commentRouter from "./Comments.js";
 import voteRouter from "./Votes.js";
+import authRouter from "./Users.js";
 
 import auth from "../Middleware/auth.js";
 import { readLimiter, writeLimiter } from "../Middleware/rateLimit.js";
@@ -30,5 +31,10 @@ router.use("/comment", writeLimiter, auth, commentRouter);
 /* ================= VOTES ================= */
 // 🔒 Protected
 router.use("/vote", writeLimiter, auth, voteRouter);
+
+/* ================= USERS ================= */
+// 🔒 Protected
+router.use("/auth", authRouter);
+
 
 export default router;

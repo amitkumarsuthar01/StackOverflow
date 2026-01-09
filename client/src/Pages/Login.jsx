@@ -31,6 +31,8 @@ const Login = () => {
     if (user) navigate("/");
   }, [user, navigate]);
 
+
+
   // Email login handler with toast validation
   const handleEmailLogin = (e) => {
     e.preventDefault();
@@ -60,7 +62,7 @@ const Login = () => {
 
       {/* GOOGLE LOGIN */}
       <button
-        onClick={() => dispatch(loginWithGoogle())}
+        onClick={() => dispatch(loginWithGoogle() )}
         className="bg-white w-72 text-center p-2 rounded-md flex items-center justify-center gap-2 shadow-sm hover:bg-gray-100 cursor-pointer"
       >
         <GoogleIcon sx={{ fontSize: 20 }} />
