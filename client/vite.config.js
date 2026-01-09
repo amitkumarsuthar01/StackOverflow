@@ -1,7 +1,31 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+// import { defineConfig } from 'vite'
+// import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
+// // https://vite.dev/config/
+// export default defineConfig({
+//   plugins: [react()],
+//   test: {
+//     environment: "jsdom",
+//     globals: true,
+//     setupFiles: "./src/setupTests.js",
+//   },
+//   server: {
+//     open: true,
+//     host: true,
+//     proxy: {
+//       "/api": {
+//         // target: "http://localhost:3000",
+//         target: "stackoverflow-production-d987.up.railway.app",
+//         changeOrigin: true,
+//         secure: false,
+//       },
+//     }
+//   }
+// })
+
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
 export default defineConfig({
   plugins: [react()],
   test: {
@@ -14,10 +38,11 @@ export default defineConfig({
     host: true,
     proxy: {
       "/api": {
-        target: "http://localhost:3000",
+        target: "https://stackoverflow-production-d987.up.railway.app",
         changeOrigin: true,
-        secure: false,
+        secure: true,
       },
-    }
-  }
-})
+    },
+  },
+});
+
