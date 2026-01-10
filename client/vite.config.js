@@ -14,7 +14,7 @@ export default defineConfig({
     proxy: {
       "/api": {
         // target: "http://localhost:3000",
-        target: "stackoverflow-production-d987.up.railway.app",
+        target: "https://stackoverflow-production-d987.up.railway.app",
         changeOrigin: true,
         secure: true,
       },
