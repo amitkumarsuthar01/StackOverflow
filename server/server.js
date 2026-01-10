@@ -14,7 +14,7 @@ app.set("trust proxy", 1);
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://stack-overflow-jade-phi.vercel.app/"
+    "https://stack-overflow-jade-phi.vercel.app"
   ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
