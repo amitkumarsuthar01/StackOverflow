@@ -17,6 +17,8 @@ import { getAuthToken } from "../utils/getAuthToken";
 const safeParse = (html) =>
   typeof html === "string" ? parse(html) : null;
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const getVoteCount = (votes) => {
   if (!Array.isArray(votes)) return Number(votes) || 0;
   return votes.reduce((sum, v) => sum + (v.value || 0), 0);
@@ -83,7 +85,7 @@ useEffect(() => {
         return;
       }
 
-      const res = await fetch(`/api/question/${id}`, {
+      const res = await fetch(`${API_URL}/api/question/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -112,7 +114,7 @@ useEffect(() => {
     try {
       const token = await getAuthToken();
 
-      const res = await fetch("/api/vote", {
+      const res = await fetch(`${API_URL}/api/vote`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -152,7 +154,7 @@ useEffect(() => {
     try {
       const token = await getAuthToken();
 
-      const res = await fetch("/api/comment", {
+      const res = await fetch(`${API_URL}/api/comment`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -207,7 +209,7 @@ useEffect(() => {
     try {
       const token = await getAuthToken();
 
-      const res = await fetch("/api/answer", {
+      const res = await fetch(`${API_URL}/api/answer`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

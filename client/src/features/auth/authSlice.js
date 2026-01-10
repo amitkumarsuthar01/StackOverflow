@@ -18,6 +18,8 @@ import {
 
 import { googleProvider, githubProvider } from "../../firebase";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 /* ============================================================
    🔥 SYNC USER TO MONGODB (MUST BE AT TOP)
 ============================================================ */
@@ -31,7 +33,7 @@ export const syncUserToMongo = async () => {
 
   const token = await user.getIdToken(true);
 
-  const res = await fetch("/api/auth/me", {
+  const res = await fetch(`${API_URL}/api/auth/me`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,

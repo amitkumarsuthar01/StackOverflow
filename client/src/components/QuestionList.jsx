@@ -12,6 +12,8 @@ const getVoteCount = (votes) => {
   return votes.reduce((sum, v) => sum + (v.value || 0), 0);
 };
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function QuestionList() {
   const filters = ["Newest", "Active", "Unanswered", "More"];
 
@@ -58,8 +60,8 @@ export default function QuestionList() {
       setLoading(true);
 
       const url = searchQuery
-        ? `/api/question/search?q=${searchQuery}`
-        : `/api/question`;
+        ? `${API_URL}/api/question/search?q=${searchQuery}`
+        : `${API_URL}/api/question`;
 
       const res = await fetch(url);
       const data = await res.json();

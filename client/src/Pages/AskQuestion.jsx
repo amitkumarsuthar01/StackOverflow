@@ -23,6 +23,8 @@ const AskQuestion = () => {
 
   const [postLocation, setPostLocation] = useState("staging");
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, false] }],
@@ -78,7 +80,7 @@ const AskQuestion = () => {
       // 🔑 Get Firebase ID Token
       const token = await auth.currentUser.getIdToken();
 
-      const response = await fetch("/api/question", {
+      const response = await fetch(`${API_URL}/api/question`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

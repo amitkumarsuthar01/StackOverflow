@@ -11,14 +11,14 @@ export default defineConfig({
   server: {
     open: true,
     host: true,
-    proxy: {
-      "/api": {
-        // target: "http://localhost:3000",
-        target: "https://stackoverflow-production-d987.up.railway.app",
-        changeOrigin: true,
-        secure: true,
-      },
-    },
+    // proxy: {
+    //   "/api": {
+    //     // target: "http://localhost:3000",
+    //     target: "https://stackoverflow-production-d987.up.railway.app",
+    //     changeOrigin: true,
+    //     secure: true,
+    //   },
+    // },
   },
 });
 
